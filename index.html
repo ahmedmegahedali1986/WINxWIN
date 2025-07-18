@@ -27,7 +27,7 @@
         direction: rtl;
     }
 
-    /* --- ✅ تعديلات السبلاش المدمج --- */
+    /* --- Splash Screen Styles --- */
     #info-form-modal {
         position: fixed;
         inset: 0;
@@ -52,7 +52,7 @@
     #form-logo {
         width: 60vmin;
         max-width: 300px;
-        margin: 0 auto 1.5rem; /* ✅ تم تحديد الهامش النهائي هنا */
+        margin: 0 auto 1.5rem;
         animation: logo-intro 2.5s forwards cubic-bezier(0.4, 0, 0.2, 1);
     }
     .form-fields {
@@ -61,16 +61,15 @@
         animation-delay: 1s; 
     }
 
-    /* ✅ تم تعديل الأنيميشن ليبدأ من المنتصف */
     @keyframes logo-intro {
         0% {
-            transform: scale(1.2) translateY(22vh); /* التحريك للأسفل ليبدأ من المنتصف */
+            transform: scale(1.2) translateY(22vh);
         }
         40% {
             transform: scale(1.2) translateY(22vh);
         }
         100% {
-            transform: scale(1) translateY(0); /* العودة للوضع الطبيعي */
+            transform: scale(1) translateY(0);
             width: 30vmin;
             max-width: 150px;
         }
@@ -80,8 +79,8 @@
         from { opacity: 0; transform: translateY(20px); }
         to { opacity: 1; transform: translateY(0); }
     }
-    /* --- نهاية تعديلات السبلاش --- */
     
+    /* --- Game Styles --- */
     #game-wrapper {
       width: 100vw;
       height: 100vh;
@@ -95,16 +94,14 @@
       background-size: cover;
     }
 
+    /* ✅ [THE FIX] Switched from CSS Grid to Absolute Positioning */
     .board {
       width: 84.2vmin;
       height: 84.2vmin;
       max-width: 415px;
       max-height: 415px;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      grid-template-rows: repeat(4, 1fr);
-      gap: 3.0%;
-      padding: 5.8%;
+      position: relative;
+      /* Grid properties removed to allow for absolute positioning of cells */
     }
 
     .cell {
@@ -114,7 +111,9 @@
       justify-content: center;
       border: none;
       background-color: transparent;
+      position: absolute; /* Each cell is now positioned absolutely */
     }
+    /* ✅ End of Fix */
 
     .cell img {
       width: 80%;
@@ -159,6 +158,7 @@
 
     .hidden { display: none !important; }
 
+    /* --- Form & UI Element Styles --- */
     .form-container input[type="text"], .form-container .radio-group {
         width: 100%;
         padding: 0.75rem;
@@ -375,6 +375,32 @@
       [0, 5, 10, 15], [3, 6, 9, 12]
     ];
 
+    // ✅ [THE FIX] Coordinate map for all 16 cells.
+    // You can tweak these percentage values for pixel-perfect alignment.
+    const cellPositions = [
+        // Row 0
+        { top: '5.8%', left: '5.8%', width: '19.85%', height: '20.2%' },
+        { top: '5.8%', left: '28.65%', width: '19.85%', height: '20.2%' },
+        { top: '5.8%', left: '51.5%', width: '19.85%', height: '20.2%' },
+        { top: '5.8%', left: '74.35%', width: '19.85%', height: '20.2%' },
+        // Row 1
+        { top: '28.9%', left: '5.8%', width: '19.85%', height: '20.0%' },
+        { top: '28.9%', left: '28.65%', width: '19.85%', height: '20.0%' },
+        { top: '28.9%', left: '51.5%', width: '19.85%', height: '20.0%' },
+        { top: '28.9%', left: '74.35%', width: '19.85%', height: '20.0%' },
+        // Row 2
+        { top: '51.8%', left: '5.8%', width: '19.85%', height: '19.8%' },
+        { top: '51.8%', left: '28.65%', width: '19.85%', height: '19.8%' },
+        { top: '51.8%', left: '51.5%', width: '19.85%', height: '19.8%' },
+        { top: '51.8%', left: '74.35%', width: '19.85%', height: '19.8%' },
+        // Row 3
+        { top: '74.5%', left: '5.8%', width: '19.85%', height: '19.7%' },
+        { top: '74.5%', left: '28.65%', width: '19.85%', height: '19.7%' },
+        { top: '74.5%', left: '51.5%', width: '19.85%', height: '19.7%' },
+        { top: '74.5%', left: '74.35%', width: '19.85%', height: '19.7%' },
+    ];
+
+
     const boardElement = document.getElementById('gameBoard');
     const notificationElement = document.getElementById('start-notification');
     const resultModal = document.getElementById('resultModal');
@@ -447,10 +473,18 @@
       }, 2500);
 
       boardElement.innerHTML = '';
+      // ✅ [THE FIX] Loop to create cells and apply absolute positioning from the coordinate map.
       for (let i = 0; i < BOARD_SIZE * BOARD_SIZE; i++) {
         const cell = document.createElement('div');
         cell.classList.add('cell');
         cell.dataset.index = i;
+
+        const pos = cellPositions[i];
+        cell.style.top = pos.top;
+        cell.style.left = pos.left;
+        cell.style.width = pos.width;
+        cell.style.height = pos.height;
+
         cell.addEventListener('click', handleCellClick);
         boardElement.appendChild(cell);
       }
