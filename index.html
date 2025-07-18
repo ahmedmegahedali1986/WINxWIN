@@ -109,7 +109,9 @@
 
     .cell {
       cursor: pointer;
-      position: relative; /* ✅ تم التعديل هنا */
+      display: flex;
+      align-items: center;
+      justify-content: center;
       border: none;
       background-color: transparent;
     }
@@ -118,16 +120,14 @@
       width: 80%;
       height: 80%;
       object-fit: contain;
-      position: absolute; /* ✅ تم التعديل هنا */
-      top: 50%; /* ✅ تم التعديل هنا */
-      left: 50%; /* ✅ تم التعديل هنا */
-      transform: translate(-50%, -50%); /* ✅ تم التعديل هنا */
+      display: block; /* ✅ تطبيق اقتراحك */
+      margin: auto; /* ✅ تطبيق اقتراحك */
       animation: appear 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
     
     @keyframes appear {
-      from { transform: translate(-50%, -50%) scale(0.2) rotate(-90deg); opacity: 0; }
-      to { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 1; }
+      from { transform: scale(0.2) rotate(-90deg); opacity: 0; }
+      to { transform: scale(1) rotate(0deg); opacity: 1; }
     }
 
     #start-notification {
