@@ -94,14 +94,12 @@
       background-size: cover;
     }
 
-    /* ✅ [THE FIX] Switched from CSS Grid to Absolute Positioning */
     .board {
       width: 84.2vmin;
       height: 84.2vmin;
       max-width: 415px;
       max-height: 415px;
       position: relative;
-      /* Grid properties removed to allow for absolute positioning of cells */
     }
 
     .cell {
@@ -111,9 +109,8 @@
       justify-content: center;
       border: none;
       background-color: transparent;
-      position: absolute; /* Each cell is now positioned absolutely */
+      position: absolute;
     }
-    /* ✅ End of Fix */
 
     .cell img {
       width: 80%;
@@ -375,29 +372,28 @@
       [0, 5, 10, 15], [3, 6, 9, 12]
     ];
 
-    // ✅ [THE FIX] Coordinate map for all 16 cells.
-    // You can tweak these percentage values for pixel-perfect alignment.
+    // ✅ [THE FIX v2] Fine-tuned coordinate map for better alignment.
     const cellPositions = [
         // Row 0
-        { top: '5.8%', left: '5.8%', width: '19.85%', height: '20.2%' },
-        { top: '5.8%', left: '28.65%', width: '19.85%', height: '20.2%' },
-        { top: '5.8%', left: '51.5%', width: '19.85%', height: '20.2%' },
-        { top: '5.8%', left: '74.35%', width: '19.85%', height: '20.2%' },
+        { top: '6.5%', left: '6.3%', width: '19.85%', height: '20.2%' },
+        { top: '6.5%', left: '29.15%', width: '19.85%', height: '20.2%' },
+        { top: '6.5%', left: '52.0%', width: '19.85%', height: '20.2%' },
+        { top: '6.5%', left: '74.85%', width: '19.85%', height: '20.2%' },
         // Row 1
-        { top: '28.9%', left: '5.8%', width: '19.85%', height: '20.0%' },
-        { top: '28.9%', left: '28.65%', width: '19.85%', height: '20.0%' },
-        { top: '28.9%', left: '51.5%', width: '19.85%', height: '20.0%' },
-        { top: '28.9%', left: '74.35%', width: '19.85%', height: '20.0%' },
+        { top: '29.5%', left: '6.3%', width: '19.85%', height: '20.0%' },
+        { top: '29.5%', left: '29.15%', width: '19.85%', height: '20.0%' },
+        { top: '29.5%', left: '52.0%', width: '19.85%', height: '20.0%' },
+        { top: '29.5%', left: '74.85%', width: '19.85%', height: '20.0%' },
         // Row 2
-        { top: '51.8%', left: '5.8%', width: '19.85%', height: '19.8%' },
-        { top: '51.8%', left: '28.65%', width: '19.85%', height: '19.8%' },
-        { top: '51.8%', left: '51.5%', width: '19.85%', height: '19.8%' },
-        { top: '51.8%', left: '74.35%', width: '19.85%', height: '19.8%' },
+        { top: '52.5%', left: '6.3%', width: '19.85%', height: '19.8%' },
+        { top: '52.5%', left: '29.15%', width: '19.85%', height: '19.8%' },
+        { top: '52.5%', left: '52.0%', width: '19.85%', height: '19.8%' },
+        { top: '52.5%', left: '74.85%', width: '19.85%', height: '19.8%' },
         // Row 3
-        { top: '74.5%', left: '5.8%', width: '19.85%', height: '19.7%' },
-        { top: '74.5%', left: '28.65%', width: '19.85%', height: '19.7%' },
-        { top: '74.5%', left: '51.5%', width: '19.85%', height: '19.7%' },
-        { top: '74.5%', left: '74.35%', width: '19.85%', height: '19.7%' },
+        { top: '75.2%', left: '6.3%', width: '19.85%', height: '19.7%' },
+        { top: '75.2%', left: '29.15%', width: '19.85%', height: '19.7%' },
+        { top: '75.2%', left: '52.0%', width: '19.85%', height: '19.7%' },
+        { top: '75.2%', left: '74.85%', width: '19.85%', height: '19.7%' },
     ];
 
 
@@ -473,7 +469,6 @@
       }, 2500);
 
       boardElement.innerHTML = '';
-      // ✅ [THE FIX] Loop to create cells and apply absolute positioning from the coordinate map.
       for (let i = 0; i < BOARD_SIZE * BOARD_SIZE; i++) {
         const cell = document.createElement('div');
         cell.classList.add('cell');
@@ -511,7 +506,7 @@
         makeMove(index, PLAYER);
         if (gameActive) {
           boardElement.style.pointerEvents = 'none'; 
-          setTimeout(aiMove, 100); // Add a small delay for better UX
+          setTimeout(aiMove, 100); 
         }
       }
     }
@@ -562,7 +557,7 @@
         }
         
         setTimeout(() => {
-            if (bestMove.index !== -1 && gameActive) { // Check gameActive again
+            if (bestMove.index !== -1 && gameActive) {
                 playSound('click');
                 makeMove(bestMove.index, AI);
             }
@@ -585,10 +580,10 @@
 
     function endGame(isDraw, winner = null) {
         gameActive = false;
-        boardElement.style.pointerEvents = 'none'; // Disable board immediately
+        boardElement.style.pointerEvents = 'none';
         resetButton.classList.add('hidden');
 
-        setTimeout(() => { // Delay showing the modal
+        setTimeout(() => {
             if (isDraw) {
                 drawsCount++;
                 sessionStorage.setItem('drawsCount', drawsCount);
@@ -625,7 +620,6 @@
         let blockingMove = -1;
         const boardSizeSq = BOARD_SIZE * BOARD_SIZE;
 
-        // Check for winning move for AI
         for (let i = 0; i < boardSizeSq; i++) {
             if (boardState[i] === null) {
                 boardState[i] = AI;
@@ -638,27 +632,24 @@
             }
         }
 
-        // Check for blocking move against Player
         for (let i = 0; i < boardSizeSq; i++) {
             if (boardState[i] === null) {
                 boardState[i] = PLAYER;
                 if (checkWin(PLAYER)) {
                     blockingMove = i;
                     boardState[i] = null;
-                    break; // Found a block, no need to check further in this loop
+                    break; 
                 }
                 boardState[i] = null;
             }
         }
 
-        // Decide whether to block or make a random move
-        const makeDumbMove = Math.random() < 0.1; // Reduced probability of dumb move
+        const makeDumbMove = Math.random() < 0.1;
 
         if (blockingMove !== -1 && !makeDumbMove) {
             return { index: blockingMove, type: 'block' };
         }
 
-        // Otherwise, find a random available spot
         const available = [];
         boardState.forEach((val, idx) => {
             if (val === null) available.push(idx);
@@ -675,13 +666,12 @@
     }
     
     function performExit() {
-        sessionStorage.clear(); // Clear all session data on exit
-        drawsCount = 0; // Reset draws count variable
+        sessionStorage.clear(); 
+        drawsCount = 0; 
         resultModal.classList.add('hidden');
         confirmExitModal.classList.add('hidden');
         gameWrapper.classList.add('hidden');
         
-        // Reset form fields
         document.getElementById('playerName').value = '';
         document.getElementById('playerMobile').value = '';
         document.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false);
@@ -692,7 +682,6 @@
         const logo = document.getElementById('form-logo');
         const fields = document.querySelector('.form-fields');
         
-        // Reset animations
         logo.style.animation = 'none';
         fields.style.animation = 'none';
         
@@ -704,7 +693,6 @@
     }
 
     function initializeGame() {
-        // Reset draw count for the new session
         sessionStorage.setItem('drawsCount', '0');
         drawsCount = 0;
         
@@ -741,12 +729,12 @@
     });
     
     exitBtn.addEventListener('click', () => {
-        gameActive = false; // Pause game activity
+        gameActive = false; 
         confirmExitModal.classList.remove('hidden');
     });
     
     cancelExitBtn.addEventListener('click', () => {
-        gameActive = true; // Resume game
+        gameActive = true; 
         confirmExitModal.classList.add('hidden');
     });
     
