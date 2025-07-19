@@ -95,7 +95,6 @@
       transition: padding-top 0.3s ease-out; /* Smooth transition for padding */
     }
 
-    /* ✅ [Final Layout Polish v17] Using padding for a more precise layout on tall screens */
     @media (min-height: 850px) and (max-width: 500px) {
       #game-wrapper {
         padding-top: 5vh; /* Pushes content down without scaling */
@@ -429,9 +428,15 @@
     
     let drawsCount = sessionStorage.getItem('drawsCount') ? parseInt(sessionStorage.getItem('drawsCount')) : 0;
 
-    let clickSound, winSound, startSound;
+    // ✅ [Audio Polish v18] Create separate sounds for Player and AI
+    let playerClickSound, aiClickSound, winSound, startSound;
     try {
-        clickSound = new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { attack: 0.005, decay: 0.1, sustain: 0.3, release: 1 } }).toDestination();
+        // A slightly higher, clearer sound for the player (O)
+        playerClickSound = new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { attack: 0.005, decay: 0.1, sustain: 0.3, release: 1 } }).toDestination();
+        
+        // A slightly lower, different timbre for the AI (X)
+        aiClickSound = new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.01, decay: 0.2, sustain: 0.2, release: 1 } }).toDestination();
+        
         winSound = new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.01, decay: 0.4, sustain: 0.5, release: 1 } }).toDestination();
         startSound = new Tone.MembraneSynth().toDestination();
     } catch (error) {
@@ -439,10 +444,12 @@
         isAudioReady = false;
     }
 
+    // ✅ [Audio Polish v18] Updated function to play different sounds
     function playSound(sound) {
         if (!isMuted && isAudioReady) {
             try {
-                if(sound === 'click' && clickSound) clickSound.triggerAttackRelease("C5", "8n");
+                if(sound === 'player' && playerClickSound) playerClickSound.triggerAttackRelease("E5", "8n"); // Higher pitch for player
+                if(sound === 'ai' && aiClickSound) aiClickSound.triggerAttackRelease("C5", "8n"); // Lower pitch for AI
                 if(sound === 'win' && winSound) winSound.triggerAttackRelease("G5", "4n");
                 if(sound === 'start' && startSound) startSound.triggerAttackRelease("C2", "8n");
             } catch (error) {
@@ -509,7 +516,7 @@
       if (!gameActive) return;
       const index = e.currentTarget.dataset.index;
       if (boardState[index] === null) {
-        playSound('click');
+        // Sound is now handled by makeMove
         makeMove(index, PLAYER);
         if (gameActive) {
           boardElement.style.pointerEvents = 'none'; 
@@ -518,8 +525,13 @@
       }
     }
 
+    // ✅ [Audio Polish v18] Play sound from within makeMove for cleaner logic
     function makeMove(index, player) {
       if (boardState[index] !== null || !gameActive) return;
+
+      const soundToPlay = player === PLAYER ? 'player' : 'ai';
+      playSound(soundToPlay);
+      
       boardState[index] = player;
       const cell = boardElement.children[index];
       cell.innerHTML = ''; 
@@ -565,7 +577,7 @@
         
         setTimeout(() => {
             if (bestMove.index !== -1 && gameActive) {
-                playSound('click');
+                // Sound is now handled by makeMove
                 makeMove(bestMove.index, AI);
             }
             boardElement.style.pointerEvents = 'auto';
