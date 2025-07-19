@@ -92,6 +92,14 @@
       box-sizing: border-box;
       background: url('https://i.ibb.co/RGH0QSKN/final-board-background.png') no-repeat center center fixed;
       background-size: cover;
+      transition: padding-top 0.3s ease-out; /* Smooth transition for padding */
+    }
+
+    /* ✅ [Final Layout Polish v17] Using padding for a more precise layout on tall screens */
+    @media (min-height: 850px) and (max-width: 500px) {
+      #game-wrapper {
+        padding-top: 5vh; /* Pushes content down without scaling */
+      }
     }
 
     .board {
@@ -372,28 +380,27 @@
       [0, 5, 10, 15], [3, 6, 9, 12]
     ];
 
-    // ✅ [Layout Tweak v15] Adjusted the 'left' property for the right-most column.
     const cellPositions = [
         // Row 0 (Top)
         { top: '5.5%', left: '3.8%', width: '20%', height: '20%' },
         { top: '5.5%', left: '27.0%', width: '20%', height: '20%' },
         { top: '5.5%', left: '50.2%', width: '20%', height: '20%' },
-        { top: '5.5%', left: '75.5%', width: '20%', height: '20%' }, // Adjusted from 74.2%
+        { top: '5.5%', left: '75.5%', width: '20%', height: '20%' },
         // Row 1
         { top: '28.8%', left: '3.8%', width: '20%', height: '20%' },
         { top: '28.8%', left: '27.0%', width: '20%', height: '20%' },
         { top: '28.8%', left: '50.2%', width: '20%', height: '20%' },
-        { top: '28.8%', left: '75.5%', width: '20%', height: '20%' }, // Adjusted from 74.2%
+        { top: '28.8%', left: '75.5%', width: '20%', height: '20%' },
         // Row 2
         { top: '52.1%', left: '3.8%', width: '20%', height: '20%' },
         { top: '52.1%', left: '27.0%', width: '20%', height: '20%' },
         { top: '52.1%', left: '50.2%', width: '20%', height: '20%' },
-        { top: '52.1%', left: '75.5%', width: '20%', height: '20%' }, // Adjusted from 74.2%
+        { top: '52.1%', left: '75.5%', width: '20%', height: '20%' },
         // Row 3 (Bottom)
         { top: '76.2%', left: '3.8%', width: '20%', height: '20%' },
         { top: '76.2%', left: '27.0%', width: '20%', height: '20%' },
         { top: '76.2%', left: '50.2%', width: '20%', height: '20%' },
-        { top: '76.2%', left: '75.5%', width: '20%', height: '20%' }, // Adjusted from 74.2%
+        { top: '76.2%', left: '75.5%', width: '20%', height: '20%' },
     ];
 
 
