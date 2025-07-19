@@ -428,15 +428,10 @@
     
     let drawsCount = sessionStorage.getItem('drawsCount') ? parseInt(sessionStorage.getItem('drawsCount')) : 0;
 
-    // ✅ [Audio Polish v18] Create separate sounds for Player and AI
     let playerClickSound, aiClickSound, winSound, startSound;
     try {
-        // A slightly higher, clearer sound for the player (O)
         playerClickSound = new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { attack: 0.005, decay: 0.1, sustain: 0.3, release: 1 } }).toDestination();
-        
-        // A slightly lower, different timbre for the AI (X)
         aiClickSound = new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.01, decay: 0.2, sustain: 0.2, release: 1 } }).toDestination();
-        
         winSound = new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.01, decay: 0.4, sustain: 0.5, release: 1 } }).toDestination();
         startSound = new Tone.MembraneSynth().toDestination();
     } catch (error) {
@@ -444,12 +439,11 @@
         isAudioReady = false;
     }
 
-    // ✅ [Audio Polish v18] Updated function to play different sounds
     function playSound(sound) {
         if (!isMuted && isAudioReady) {
             try {
-                if(sound === 'player' && playerClickSound) playerClickSound.triggerAttackRelease("E5", "8n"); // Higher pitch for player
-                if(sound === 'ai' && aiClickSound) aiClickSound.triggerAttackRelease("C5", "8n"); // Lower pitch for AI
+                if(sound === 'player' && playerClickSound) playerClickSound.triggerAttackRelease("E5", "8n");
+                if(sound === 'ai' && aiClickSound) aiClickSound.triggerAttackRelease("C5", "8n");
                 if(sound === 'win' && winSound) winSound.triggerAttackRelease("G5", "4n");
                 if(sound === 'start' && startSound) startSound.triggerAttackRelease("C2", "8n");
             } catch (error) {
@@ -516,7 +510,6 @@
       if (!gameActive) return;
       const index = e.currentTarget.dataset.index;
       if (boardState[index] === null) {
-        // Sound is now handled by makeMove
         makeMove(index, PLAYER);
         if (gameActive) {
           boardElement.style.pointerEvents = 'none'; 
@@ -525,7 +518,6 @@
       }
     }
 
-    // ✅ [Audio Polish v18] Play sound from within makeMove for cleaner logic
     function makeMove(index, player) {
       if (boardState[index] !== null || !gameActive) return;
 
@@ -577,7 +569,6 @@
         
         setTimeout(() => {
             if (bestMove.index !== -1 && gameActive) {
-                // Sound is now handled by makeMove
                 makeMove(bestMove.index, AI);
             }
             boardElement.style.pointerEvents = 'auto';
@@ -668,9 +659,11 @@
             }
         }
 
-        if (blockingMove !== -1) {
-            return { index: blockingMove, type: 'block' };
-        }
+        // ✅ [Easy Mode v19] AI will no longer block the player's winning move.
+        // This makes the game easier as requested.
+        // if (blockingMove !== -1) {
+        //     return { index: blockingMove, type: 'block' };
+        // }
 
         // 3. Priority 3: Take a strategic position (Center)
         // If no immediate win or block, try to take one of the center squares.
