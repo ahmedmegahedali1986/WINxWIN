@@ -372,28 +372,27 @@
       [0, 5, 10, 15], [3, 6, 9, 12]
     ];
 
-    // ✅ [Final Implementation] Precise, percentage-based absolute positioning.
     const cellPositions = [
         // Row 0 (Top)
         { top: '5.5%', left: '3.8%', width: '20%', height: '20%' },
         { top: '5.5%', left: '27.0%', width: '20%', height: '20%' },
         { top: '5.5%', left: '50.2%', width: '20%', height: '20%' },
-        { top: '5.5%', left: '73.4%', width: '20%', height: '20%' },
+        { top: '5.5%', left: '74.2%', width: '20%', height: '20%' },
         // Row 1
         { top: '28.8%', left: '3.8%', width: '20%', height: '20%' },
         { top: '28.8%', left: '27.0%', width: '20%', height: '20%' },
         { top: '28.8%', left: '50.2%', width: '20%', height: '20%' },
-        { top: '28.8%', left: '73.4%', width: '20%', height: '20%' },
+        { top: '28.8%', left: '74.2%', width: '20%', height: '20%' },
         // Row 2
         { top: '52.1%', left: '3.8%', width: '20%', height: '20%' },
         { top: '52.1%', left: '27.0%', width: '20%', height: '20%' },
         { top: '52.1%', left: '50.2%', width: '20%', height: '20%' },
-        { top: '52.1%', left: '73.4%', width: '20%', height: '20%' },
+        { top: '52.1%', left: '74.2%', width: '20%', height: '20%' },
         // Row 3 (Bottom)
-        { top: '75.4%', left: '3.8%', width: '20%', height: '20%' },
-        { top: '75.4%', left: '27.0%', width: '20%', height: '20%' },
-        { top: '75.4%', left: '50.2%', width: '20%', height: '20%' },
-        { top: '75.4%', left: '73.4%', width: '20%', height: '20%' },
+        { top: '76.2%', left: '3.8%', width: '20%', height: '20%' },
+        { top: '76.2%', left: '27.0%', width: '20%', height: '20%' },
+        { top: '76.2%', left: '50.2%', width: '20%', height: '20%' },
+        { top: '76.2%', left: '74.2%', width: '20%', height: '20%' },
     ];
 
 
@@ -615,54 +614,74 @@
         }, 800);
     }
 
+    // ✅ [Smarter AI v14] Updated AI logic to be more strategic.
     function findBestMove() {
         let winningMove = -1;
         let blockingMove = -1;
         const boardSizeSq = BOARD_SIZE * BOARD_SIZE;
 
+        // --- AI Strategy ---
+        // 1. Priority 1: Win the game
+        // Check if there is a move for the AI to win immediately.
         for (let i = 0; i < boardSizeSq; i++) {
             if (boardState[i] === null) {
-                boardState[i] = AI;
+                boardState[i] = AI; // Test the move
                 if (checkWin(AI)) {
                     winningMove = i;
-                    boardState[i] = null;
+                    boardState[i] = null; // Backtrack
                     return { index: winningMove, type: 'win' };
                 }
-                boardState[i] = null;
+                boardState[i] = null; // Backtrack
             }
         }
 
+        // 2. Priority 2: Block the player from winning
+        // Check if the player has an immediate winning move and block it.
         for (let i = 0; i < boardSizeSq; i++) {
             if (boardState[i] === null) {
-                boardState[i] = PLAYER;
+                boardState[i] = PLAYER; // Test the move for the player
                 if (checkWin(PLAYER)) {
                     blockingMove = i;
-                    boardState[i] = null;
-                    break; 
+                    boardState[i] = null; // Backtrack
+                    break; // Found a block, no need to look for others
                 }
-                boardState[i] = null;
+                boardState[i] = null; // Backtrack
             }
         }
 
-        const makeDumbMove = Math.random() < 0.1;
-
-        if (blockingMove !== -1 && !makeDumbMove) {
+        // The "dumb move" logic was removed to make the AI always play the best move.
+        // This directly addresses the issue where the AI would fail to block a win.
+        if (blockingMove !== -1) {
             return { index: blockingMove, type: 'block' };
         }
 
+        // 3. Priority 3: Take a strategic position (Center)
+        // If no immediate win or block, try to take one of the center squares.
         const available = [];
         boardState.forEach((val, idx) => {
             if (val === null) available.push(idx);
         });
+        
+        const centerSquares = [5, 6, 9, 10];
+        const availableCenter = available.filter(idx => centerSquares.includes(idx));
+        if (availableCenter.length > 0) {
+             return {
+                index: availableCenter[Math.floor(Math.random() * availableCenter.length)],
+                type: 'center'
+            };
+        }
 
+        // 4. Priority 4: Take any available spot
+        // If center is not available, take any other random available spot.
         if (available.length > 0) {
             return {
                 index: available[Math.floor(Math.random() * available.length)],
                 type: 'random'
             };
-        } else {
-            return { index: -1, type: 'none' };
         }
+
+        // No moves available
+        return { index: -1, type: 'none' };
     }
     
     function performExit() {
