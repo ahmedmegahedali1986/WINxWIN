@@ -112,18 +112,21 @@
       position: absolute;
     }
 
+    /* ✅ [THE FIX v4] Fine-tuned centering of the image piece */
     .cell img {
       width: 80%;
       height: 80%;
       object-fit: contain;
       display: block;
       margin: auto;
-      animation: appear 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      /* The 'forwards' keyword makes the animation's end state (the 'to' keyframe) persist */
+      animation: appear 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     }
     
     @keyframes appear {
       from { transform: scale(0.2) rotate(-90deg); opacity: 0; }
-      to { transform: scale(1) rotate(0deg); opacity: 1; }
+      /* Nudge the final position slightly right and down to achieve perfect visual center */
+      to { transform: scale(1) rotate(0deg) translate(3%, 4%); opacity: 1; }
     }
 
     #start-notification {
@@ -372,28 +375,27 @@
       [0, 5, 10, 15], [3, 6, 9, 12]
     ];
 
-    // ✅ [THE FIX v2] Fine-tuned coordinate map for better alignment.
     const cellPositions = [
         // Row 0
-        { top: '6.5%', left: '6.3%', width: '19.85%', height: '20.2%' },
-        { top: '6.5%', left: '29.15%', width: '19.85%', height: '20.2%' },
-        { top: '6.5%', left: '52.0%', width: '19.85%', height: '20.2%' },
-        { top: '6.5%', left: '74.85%', width: '19.85%', height: '20.2%' },
+        { top: '7.0%', left: '6.8%', width: '19.85%', height: '20.2%' },
+        { top: '7.0%', left: '29.65%', width: '19.85%', height: '20.2%' },
+        { top: '7.0%', left: '52.5%', width: '19.85%', height: '20.2%' },
+        { top: '7.0%', left: '75.35%', width: '19.85%', height: '20.2%' },
         // Row 1
-        { top: '29.5%', left: '6.3%', width: '19.85%', height: '20.0%' },
-        { top: '29.5%', left: '29.15%', width: '19.85%', height: '20.0%' },
-        { top: '29.5%', left: '52.0%', width: '19.85%', height: '20.0%' },
-        { top: '29.5%', left: '74.85%', width: '19.85%', height: '20.0%' },
+        { top: '30.0%', left: '6.8%', width: '19.85%', height: '20.0%' },
+        { top: '30.0%', left: '29.65%', width: '19.85%', height: '20.0%' },
+        { top: '30.0%', left: '52.5%', width: '19.85%', height: '20.0%' },
+        { top: '30.0%', left: '75.35%', width: '19.85%', height: '20.0%' },
         // Row 2
-        { top: '52.5%', left: '6.3%', width: '19.85%', height: '19.8%' },
-        { top: '52.5%', left: '29.15%', width: '19.85%', height: '19.8%' },
-        { top: '52.5%', left: '52.0%', width: '19.85%', height: '19.8%' },
-        { top: '52.5%', left: '74.85%', width: '19.85%', height: '19.8%' },
+        { top: '53.0%', left: '6.8%', width: '19.85%', height: '19.8%' },
+        { top: '53.0%', left: '29.65%', width: '19.85%', height: '19.8%' },
+        { top: '53.0%', left: '52.5%', width: '19.85%', height: '19.8%' },
+        { top: '53.0%', left: '75.35%', width: '19.85%', height: '19.8%' },
         // Row 3
-        { top: '75.2%', left: '6.3%', width: '19.85%', height: '19.7%' },
-        { top: '75.2%', left: '29.15%', width: '19.85%', height: '19.7%' },
-        { top: '75.2%', left: '52.0%', width: '19.85%', height: '19.7%' },
-        { top: '75.2%', left: '74.85%', width: '19.85%', height: '19.7%' },
+        { top: '75.7%', left: '6.8%', width: '19.85%', height: '19.7%' },
+        { top: '75.7%', left: '29.65%', width: '19.85%', height: '19.7%' },
+        { top: '75.7%', left: '52.5%', width: '19.85%', height: '19.7%' },
+        { top: '75.7%', left: '75.35%', width: '19.85%', height: '19.7%' },
     ];
 
 
