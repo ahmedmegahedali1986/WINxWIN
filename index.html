@@ -372,28 +372,28 @@
       [0, 5, 10, 15], [3, 6, 9, 12]
     ];
 
-    // ✅ [THE FIX v8] Final fine-tuning of cell positions for perfect alignment.
+    // ✅ [THE FIX v10] Final alignment adjustment: moved grid up and right.
     const cellPositions = [
         // Row 0
-        { top: '9.2%', left: '7.8%', width: '19.8%', height: '19.8%' },
-        { top: '9.2%', left: '30.4%', width: '19.8%', height: '19.8%' },
-        { top: '9.2%', left: '53.0%', width: '19.8%', height: '19.8%' },
-        { top: '9.2%', left: '75.6%', width: '19.8%', height: '19.8%' },
+        { top: '8.7%', left: '7.5%', width: '19.8%', height: '19.8%' },
+        { top: '8.7%', left: '30.1%', width: '19.8%', height: '19.8%' },
+        { top: '8.7%', left: '52.7%', width: '19.8%', height: '19.8%' },
+        { top: '8.7%', left: '75.3%', width: '19.8%', height: '19.8%' },
         // Row 1
-        { top: '31.8%', left: '7.8%', width: '19.8%', height: '19.8%' },
-        { top: '31.8%', left: '30.4%', width: '19.8%', height: '19.8%' },
-        { top: '31.8%', left: '53.0%', width: '19.8%', height: '19.8%' },
-        { top: '31.8%', left: '75.6%', width: '19.8%', height: '19.8%' },
+        { top: '31.3%', left: '7.5%', width: '19.8%', height: '19.8%' },
+        { top: '31.3%', left: '30.1%', width: '19.8%', height: '19.8%' },
+        { top: '31.3%', left: '52.7%', width: '19.8%', height: '19.8%' },
+        { top: '31.3%', left: '75.3%', width: '19.8%', height: '19.8%' },
         // Row 2
-        { top: '54.4%', left: '7.8%', width: '19.8%', height: '19.8%' },
-        { top: '54.4%', left: '30.4%', width: '19.8%', height: '19.8%' },
-        { top: '54.4%', left: '53.0%', width: '19.8%', height: '19.8%' },
-        { top: '54.4%', left: '75.6%', width: '19.8%', height: '19.8%' },
+        { top: '53.9%', left: '7.5%', width: '19.8%', height: '19.8%' },
+        { top: '53.9%', left: '30.1%', width: '19.8%', height: '19.8%' },
+        { top: '53.9%', left: '52.7%', width: '19.8%', height: '19.8%' },
+        { top: '53.9%', left: '75.3%', width: '19.8%', height: '19.8%' },
         // Row 3
-        { top: '77.0%', left: '7.8%', width: '19.8%', height: '19.8%' },
-        { top: '77.0%', left: '30.4%', width: '19.8%', height: '19.8%' },
-        { top: '77.0%', left: '53.0%', width: '19.8%', height: '19.8%' },
-        { top: '77.0%', left: '75.6%', width: '19.8%', height: '19.8%' },
+        { top: '76.5%', left: '7.5%', width: '19.8%', height: '19.8%' },
+        { top: '76.5%', left: '30.1%', width: '19.8%', height: '19.8%' },
+        { top: '76.5%', left: '52.7%', width: '19.8%', height: '19.8%' },
+        { top: '76.5%', left: '75.3%', width: '19.8%', height: '19.8%' },
     ];
 
 
@@ -542,7 +542,6 @@
     }
 
     function aiMove() {
-        // ✅ [THE FIX v8] Logic fix: Ensure board is always re-enabled, even if game ends on player's turn.
         if (!gameActive) {
             boardElement.style.pointerEvents = 'auto';
             return;
@@ -552,9 +551,9 @@
         
         let delay;
         if (bestMove.type === 'block') {
-            delay = 1200 + Math.random() * 600; 
+            delay = 600 + Math.random() * 400; 
         } else {
-            delay = 500 + Math.random() * 400; 
+            delay = 300 + Math.random() * 300; 
         }
         
         setTimeout(() => {
