@@ -372,27 +372,28 @@
       [0, 5, 10, 15], [3, 6, 9, 12]
     ];
 
+    // ✅ [Layout Tweak v15] Adjusted the 'left' property for the right-most column.
     const cellPositions = [
         // Row 0 (Top)
         { top: '5.5%', left: '3.8%', width: '20%', height: '20%' },
         { top: '5.5%', left: '27.0%', width: '20%', height: '20%' },
         { top: '5.5%', left: '50.2%', width: '20%', height: '20%' },
-        { top: '5.5%', left: '74.2%', width: '20%', height: '20%' },
+        { top: '5.5%', left: '75.5%', width: '20%', height: '20%' }, // Adjusted from 74.2%
         // Row 1
         { top: '28.8%', left: '3.8%', width: '20%', height: '20%' },
         { top: '28.8%', left: '27.0%', width: '20%', height: '20%' },
         { top: '28.8%', left: '50.2%', width: '20%', height: '20%' },
-        { top: '28.8%', left: '74.2%', width: '20%', height: '20%' },
+        { top: '28.8%', left: '75.5%', width: '20%', height: '20%' }, // Adjusted from 74.2%
         // Row 2
         { top: '52.1%', left: '3.8%', width: '20%', height: '20%' },
         { top: '52.1%', left: '27.0%', width: '20%', height: '20%' },
         { top: '52.1%', left: '50.2%', width: '20%', height: '20%' },
-        { top: '52.1%', left: '74.2%', width: '20%', height: '20%' },
+        { top: '52.1%', left: '75.5%', width: '20%', height: '20%' }, // Adjusted from 74.2%
         // Row 3 (Bottom)
         { top: '76.2%', left: '3.8%', width: '20%', height: '20%' },
         { top: '76.2%', left: '27.0%', width: '20%', height: '20%' },
         { top: '76.2%', left: '50.2%', width: '20%', height: '20%' },
-        { top: '76.2%', left: '74.2%', width: '20%', height: '20%' },
+        { top: '76.2%', left: '75.5%', width: '20%', height: '20%' }, // Adjusted from 74.2%
     ];
 
 
@@ -614,7 +615,6 @@
         }, 800);
     }
 
-    // ✅ [Smarter AI v14] Updated AI logic to be more strategic.
     function findBestMove() {
         let winningMove = -1;
         let blockingMove = -1;
@@ -649,8 +649,6 @@
             }
         }
 
-        // The "dumb move" logic was removed to make the AI always play the best move.
-        // This directly addresses the issue where the AI would fail to block a win.
         if (blockingMove !== -1) {
             return { index: blockingMove, type: 'block' };
         }
