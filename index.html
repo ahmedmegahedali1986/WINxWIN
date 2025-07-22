@@ -22,7 +22,7 @@
       direction: rtl;
       text-align: right;
     }
-    .form-container input {
+    .form-container input, .form-container select {
         text-align: right;
         direction: rtl;
     }
@@ -90,7 +90,7 @@
       justify-content: center;
       position: relative;
       box-sizing: border-box;
-      background: url('https://i.ibb.co/RGH0QSKN/final-board-background.png') no-repeat center center fixed;
+      background: url('https://i.ibb.co/RGH0QSK/final-board-background.png') no-repeat center center fixed;
       background-size: cover;
       transition: padding-top 0.3s ease-out; /* Smooth transition for padding */
     }
@@ -163,7 +163,7 @@
     .hidden { display: none !important; }
 
     /* --- Form & UI Element Styles --- */
-    .form-container input[type="text"], .form-container .radio-group {
+    .form-container input[type="text"], .form-container select {
         width: 100%;
         padding: 0.75rem;
         margin-bottom: 1rem;
@@ -173,19 +173,19 @@
         color: var(--dark-green);
         font-size: 1rem;
         font-weight: bold;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23007B4D' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: left 0.75rem center;
+        background-size: 1.5em;
+        padding-left: 3rem;
     }
     .form-container input::placeholder {
         color: #aaa;
         font-weight: normal;
     }
-    .radio-group {
-        border: none; 
-        text-align: right; 
-        color: var(--dark-green);
-        font-weight: bold;
-    }
-    .radio-group p { margin-bottom: 0.5rem; }
-    .radio-group label { margin-left: 1.5rem; }
     .form-buttons {
         display: flex;
         gap: 1rem;
@@ -204,11 +204,21 @@
         flex-grow: 1;
     }
     .form-container button:hover { background-color: var(--dark-green); transform: scale(1.05); }
-    #skip-btn {
-        background-color: #eee;
-        color: #888;
+    .form-container button:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
     }
-    #skip-btn:hover { background-color: #ddd; }
+    
+    .form-error {
+        border-color: #ef4444 !important; /* Red border for invalid fields */
+    }
+    #form-error-message {
+        color: #ef4444;
+        font-weight: bold;
+        margin-top: 1rem;
+        text-align: center;
+        height: 1.5rem; /* Reserve space to prevent layout shift */
+    }
 
     #mute-btn {
         position: absolute;
@@ -294,25 +304,27 @@
   
   <div id="info-form-modal">
       <div class="form-container">
-          <img id="form-logo" src="https://i.ibb.co/MDYKS2Xz/NO-BG-4x.webp" alt="Win Logo">
+          <img id="form-logo" src="https://i.ibb.co/MDYKS2X/NO-BG-4x.webp" alt="Win Logo">
           
           <div class="form-fields">
-              <input type="text" id="playerName" placeholder="الاسم (اختياري)">
-              <input type="text" id="playerMobile" placeholder="رقم الموبايل (اختياري)">
-              <div class="radio-group">
-                  <p>هل أنت عميل في البريد المصري؟</p>
-                  <label><input type="radio" name="isCustomer" value="yes"> نعم</label>
-                  <label><input type="radio" name="isCustomer" value="no"> لا</label>
-              </div>
-              <div class="radio-group">
-                  <p>هل تمتلك كروت بريدية مفعّلة؟</p>
-                  <label><input type="radio" name="hasCards" value="yes"> نعم</label>
-                  <label><input type="radio" name="hasCards" value="no"> لا</label>
-              </div>
+              <input type="text" id="playerName" placeholder="الاسم">
+              <input type="text" id="playerMobile" placeholder="رقم الموبايل">
+              
+              <select id="isCustomer" required>
+                  <option value="" disabled selected>هل أنت عميل بريد؟</option>
+                  <option value="نعم">نعم</option>
+                  <option value="لا">لا</option>
+              </select>
+              <select id="hasCards" required>
+                  <option value="" disabled selected>هل لديك كروت مفعلة؟</option>
+                  <option value="نعم">نعم</option>
+                  <option value="لا">لا</option>
+              </select>
+
               <div class="form-buttons">
                   <button id="submit-form-btn">ابدأ اللعب</button>
-                  <button id="skip-btn">تخطي</button>
               </div>
+              <p id="form-error-message"></p>
           </div>
       </div>
   </div>
@@ -367,7 +379,7 @@
     const AI = 'X';
     const BOARD_SIZE = 4;
     
-    const coinURL = "https://i.ibb.co/MDqdZ4Rs/Coine.png";
+    const coinURL = "https://i.ibb.co/MDqdZ4R/Coine.png";
     const xURL = "https://i.ibb.co/9xd3VGF/X.png";
         
     let boardState = Array(BOARD_SIZE * BOARD_SIZE).fill(null);
@@ -412,7 +424,6 @@
     
     const infoFormModal = document.getElementById('info-form-modal');
     const submitFormBtn = document.getElementById('submit-form-btn');
-    const skipBtn = document.getElementById('skip-btn');
     const gameWrapper = document.getElementById('game-wrapper');
     const muteBtn = document.getElementById('mute-btn');
     const unmutedIcon = document.getElementById('unmuted-icon');
@@ -422,6 +433,13 @@
     const confirmExitModal = document.getElementById('confirmExitModal');
     const confirmExitBtn = document.getElementById('confirmExitBtn');
     const cancelExitBtn = document.getElementById('cancelExitBtn');
+
+    const playerNameInput = document.getElementById('playerName');
+    const playerMobileInput = document.getElementById('playerMobile');
+    const isCustomerSelect = document.getElementById('isCustomer');
+    const hasCardsSelect = document.getElementById('hasCards');
+    const formErrorMessage = document.getElementById('form-error-message');
+
 
     let isMuted = true;
     let isAudioReady = false;
@@ -630,8 +648,6 @@
         let blockingMove = -1;
         const boardSizeSq = BOARD_SIZE * BOARD_SIZE;
 
-        // --- AI Strategy ---
-        // 1. Priority 1: Win the game
         for (let i = 0; i < boardSizeSq; i++) {
             if (boardState[i] === null) {
                 boardState[i] = AI;
@@ -644,7 +660,6 @@
             }
         }
 
-        // 2. Priority 2: Block the player from winning
         for (let i = 0; i < boardSizeSq; i++) {
             if (boardState[i] === null) {
                 boardState[i] = PLAYER;
@@ -657,16 +672,12 @@
             }
         }
 
-        // ✅ [50% AI Balance v22] AI now has a 50% chance to block.
         if (blockingMove !== -1) {
-            // AI will block 1 out of 2 times on average.
             if (Math.random() < 0.5) {
                 return { index: blockingMove, type: 'block' };
             }
-            // Otherwise, it will ignore the block and play a different move.
         }
 
-        // 3. Priority 3: Take a strategic position (Center)
         const available = [];
         boardState.forEach((val, idx) => {
             if (val === null) available.push(idx);
@@ -681,7 +692,6 @@
             };
         }
 
-        // 4. Priority 4: Take any available spot
         if (available.length > 0) {
             return {
                 index: available[Math.floor(Math.random() * available.length)],
@@ -689,7 +699,6 @@
             };
         }
 
-        // No moves available
         return { index: -1, type: 'none' };
     }
     
@@ -702,7 +711,8 @@
         
         document.getElementById('playerName').value = '';
         document.getElementById('playerMobile').value = '';
-        document.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false);
+        document.getElementById('isCustomer').value = '';
+        document.getElementById('hasCards').value = '';
 
         infoFormModal.style.opacity = '0';
         infoFormModal.classList.remove('hidden');
@@ -743,8 +753,72 @@
         initializeGame();
     }
 
-    submitFormBtn.addEventListener('click', startAudioAndGame);
-    skipBtn.addEventListener('click', startAudioAndGame);
+    function validateForm() {
+        let isValid = true;
+        formErrorMessage.textContent = '';
+
+        playerNameInput.classList.remove('form-error');
+        playerMobileInput.classList.remove('form-error');
+        isCustomerSelect.classList.remove('form-error');
+        hasCardsSelect.classList.remove('form-error');
+
+        if (playerNameInput.value.trim() === '') {
+            playerNameInput.classList.add('form-error');
+            isValid = false;
+        }
+        if (playerMobileInput.value.trim() === '') {
+            playerMobileInput.classList.add('form-error');
+            isValid = false;
+        }
+        if (isCustomerSelect.value === '') {
+            isCustomerSelect.classList.add('form-error');
+            isValid = false;
+        }
+        if (hasCardsSelect.value === '') {
+            hasCardsSelect.classList.add('form-error');
+            isValid = false;
+        }
+
+        if (!isValid) {
+            formErrorMessage.textContent = 'الرجاء إكمال جميع البيانات المطلوبة.';
+        }
+        return isValid;
+    }
+
+    async function sendFormDataToSheet() {
+        const url = 'https://script.google.com/macros/s/AKfycbwrlxfC2lPNMx2LGaj2ImaL-pTBCDk1Yz2K8EN3pcI-et4-zwIFnNubCyUYlEUBKOkv/exec';
+        
+        const body = new URLSearchParams({
+            'الاسم': playerNameInput.value.trim(),
+            'رقم الموبايل': playerMobileInput.value.trim(),
+            'عميل البريد': isCustomerSelect.value,
+            'كروت مفعلة': hasCardsSelect.value
+        });
+
+        try {
+            await fetch(url, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: body
+            });
+            console.log('Success: Data submission request sent.');
+        } catch (error) {
+            console.error('Error sending data to Google Sheet:', error);
+        }
+    }
+
+    submitFormBtn.addEventListener('click', async () => {
+        if (validateForm()) {
+            submitFormBtn.disabled = true;
+            submitFormBtn.textContent = 'جاري الإرسال...';
+            
+            await sendFormDataToSheet();
+            
+            setTimeout(() => {
+                startAudioAndGame();
+            }, 500);
+        }
+    });
 
     muteBtn.addEventListener('click', () => {
         isMuted = !isMuted;
