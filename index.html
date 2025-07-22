@@ -103,10 +103,10 @@
 
     .board {
       width: 84.2vmin;
-      height: 84.2vmin;
       max-width: 415px;
       max-height: 415px;
       position: relative;
+      aspect-ratio: 1 / 1; /* This is the fix */
     }
 
     .cell {
@@ -633,7 +633,7 @@
                     resetButton.classList.remove("hidden");
                     resultModal.classList.remove('hidden');
                 }
-            } else { 
+            } else { // This is the win/loss case
                 if (winner === PLAYER) {
                     playSound('win');
                     modalTitle.textContent = "فوز مستحق!";
@@ -742,6 +742,7 @@
     }
 
     function initializeGame() {
+        // We only reset drawsCount when starting a brand new game from the form
         sessionStorage.setItem('drawsCount', '0');
         drawsCount = 0;
         
