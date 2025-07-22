@@ -22,7 +22,7 @@
       direction: rtl;
       text-align: right;
     }
-    .form-container input, .form-container select {
+    .form-container input {
         text-align: right;
         direction: rtl;
     }
@@ -90,7 +90,7 @@
       justify-content: center;
       position: relative;
       box-sizing: border-box;
-      background: url('https://i.ibb.co/RGH0QSK/final-board-background.png') no-repeat center center fixed;
+      background: url('https://i.ibb.co/RGH0QSKN/final-board-background.png') no-repeat center center fixed;
       background-size: cover;
       transition: padding-top 0.3s ease-out; /* Smooth transition for padding */
     }
@@ -163,7 +163,7 @@
     .hidden { display: none !important; }
 
     /* --- Form & UI Element Styles --- */
-    .form-container input[type="text"], .form-container select {
+    .form-container input[type="text"] {
         width: 100%;
         padding: 0.75rem;
         margin-bottom: 1rem;
@@ -173,15 +173,22 @@
         color: var(--dark-green);
         font-size: 1rem;
         font-weight: bold;
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        appearance: none;
-        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23007B4D' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-        background-repeat: no-repeat;
-        background-position: left 0.75rem center;
-        background-size: 1.5em;
-        padding-left: 3rem;
     }
+     .radio-group {
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+        border-radius: 0.5rem;
+        border: 2px solid var(--primary-green);
+        background-color: white;
+        color: var(--dark-green);
+        font-size: 1rem;
+        font-weight: bold;
+        text-align: right; 
+    }
+    .radio-group p { margin-bottom: 0.5rem; }
+    .radio-group label { margin-left: 1.5rem; font-weight: normal; }
+    .radio-group input { margin-left: 0.5rem; }
+    
     .form-container input::placeholder {
         color: #aaa;
         font-weight: normal;
@@ -304,23 +311,21 @@
   
   <div id="info-form-modal">
       <div class="form-container">
-          <img id="form-logo" src="https://i.ibb.co/MDYKS2X/NO-BG-4x.webp" alt="Win Logo">
+          <img id="form-logo" src="https://i.ibb.co/MDYKS2Xz/NO-BG-4x.webp" alt="Win Logo">
           
           <div class="form-fields">
               <input type="text" id="playerName" placeholder="الاسم">
               <input type="text" id="playerMobile" placeholder="رقم الموبايل">
-              
-              <select id="isCustomer" required>
-                  <option value="" disabled selected>هل أنت عميل بريد؟</option>
-                  <option value="نعم">نعم</option>
-                  <option value="لا">لا</option>
-              </select>
-              <select id="hasCards" required>
-                  <option value="" disabled selected>هل لديك كروت مفعلة؟</option>
-                  <option value="نعم">نعم</option>
-                  <option value="لا">لا</option>
-              </select>
-
+              <div class="radio-group" id="customer-group">
+                  <p>هل أنت عميل في البريد المصري؟</p>
+                  <label><input type="radio" name="isCustomer" value="yes"> نعم</label>
+                  <label><input type="radio" name="isCustomer" value="no"> لا</label>
+              </div>
+              <div class="radio-group" id="cards-group">
+                  <p>هل تمتلك كروت بريدية مفعّلة؟</p>
+                  <label><input type="radio" name="hasCards" value="yes"> نعم</label>
+                  <label><input type="radio" name="hasCards" value="no"> لا</label>
+              </div>
               <div class="form-buttons">
                   <button id="submit-form-btn">ابدأ اللعب</button>
               </div>
@@ -379,7 +384,7 @@
     const AI = 'X';
     const BOARD_SIZE = 4;
     
-    const coinURL = "https://i.ibb.co/MDqdZ4R/Coine.png";
+    const coinURL = "https://i.ibb.co/MDqdZ4Rs/Coine.png";
     const xURL = "https://i.ibb.co/9xd3VGF/X.png";
         
     let boardState = Array(BOARD_SIZE * BOARD_SIZE).fill(null);
@@ -436,8 +441,8 @@
 
     const playerNameInput = document.getElementById('playerName');
     const playerMobileInput = document.getElementById('playerMobile');
-    const isCustomerSelect = document.getElementById('isCustomer');
-    const hasCardsSelect = document.getElementById('hasCards');
+    const customerGroup = document.getElementById('customer-group');
+    const cardsGroup = document.getElementById('cards-group');
     const formErrorMessage = document.getElementById('form-error-message');
 
 
@@ -709,10 +714,16 @@
         confirmExitModal.classList.add('hidden');
         gameWrapper.classList.add('hidden');
         
-        document.getElementById('playerName').value = '';
-        document.getElementById('playerMobile').value = '';
-        document.getElementById('isCustomer').value = '';
-        document.getElementById('hasCards').value = '';
+        playerNameInput.value = '';
+        playerMobileInput.value = '';
+        document.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false);
+        // Clear validation styles
+        playerNameInput.classList.remove('form-error');
+        playerMobileInput.classList.remove('form-error');
+        customerGroup.classList.remove('form-error');
+        cardsGroup.classList.remove('form-error');
+        formErrorMessage.textContent = '';
+
 
         infoFormModal.style.opacity = '0';
         infoFormModal.classList.remove('hidden');
@@ -759,8 +770,8 @@
 
         playerNameInput.classList.remove('form-error');
         playerMobileInput.classList.remove('form-error');
-        isCustomerSelect.classList.remove('form-error');
-        hasCardsSelect.classList.remove('form-error');
+        customerGroup.classList.remove('form-error');
+        cardsGroup.classList.remove('form-error');
 
         if (playerNameInput.value.trim() === '') {
             playerNameInput.classList.add('form-error');
@@ -770,12 +781,12 @@
             playerMobileInput.classList.add('form-error');
             isValid = false;
         }
-        if (isCustomerSelect.value === '') {
-            isCustomerSelect.classList.add('form-error');
+        if (!document.querySelector('input[name="isCustomer"]:checked')) {
+            customerGroup.classList.add('form-error');
             isValid = false;
         }
-        if (hasCardsSelect.value === '') {
-            hasCardsSelect.classList.add('form-error');
+        if (!document.querySelector('input[name="hasCards"]:checked')) {
+            cardsGroup.classList.add('form-error');
             isValid = false;
         }
 
@@ -788,11 +799,14 @@
     async function sendFormDataToSheet() {
         const url = 'https://script.google.com/macros/s/AKfycbwrlxfC2lPNMx2LGaj2ImaL-pTBCDk1Yz2K8EN3pcI-et4-zwIFnNubCyUYlEUBKOkv/exec';
         
+        const isCustomerValue = document.querySelector('input[name="isCustomer"]:checked').value;
+        const hasCardsValue = document.querySelector('input[name="hasCards"]:checked').value;
+
         const body = new URLSearchParams({
             'الاسم': playerNameInput.value.trim(),
             'رقم الموبايل': playerMobileInput.value.trim(),
-            'عميل البريد': isCustomerSelect.value,
-            'كروت مفعلة': hasCardsSelect.value
+            'عميل البريد': isCustomerValue === 'yes' ? 'نعم' : 'لا',
+            'كروت مفعلة': hasCardsValue === 'yes' ? 'نعم' : 'لا'
         });
 
         try {
@@ -815,6 +829,8 @@
             await sendFormDataToSheet();
             
             setTimeout(() => {
+                submitFormBtn.disabled = false;
+                submitFormBtn.textContent = 'ابدأ اللعب';
                 startAudioAndGame();
             }, 500);
         }
